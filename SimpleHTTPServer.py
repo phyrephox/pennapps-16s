@@ -35,12 +35,16 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     """
 
     server_version = "SimpleHTTP/" + __version__ 
+    done = False
 
     #def __init__(self, request):
     #    super().__init__(self, request)
     #    self.wordChecker = WordChecker()
     def __init__(self, request, client_address, server):
         BaseHTTPServer.BaseHTTPRequestHandler.__init__(self, request, client_address, server)
+        if not SimpleHTTPRequestHandler.done:
+            print 'hello'
+            SimpleHTTPRequestHandler.done = True
         self.wordChecker = WordChecker(5000)
 
     def do_GET(self):
