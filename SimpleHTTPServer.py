@@ -20,6 +20,7 @@ import sys
 import shutil
 import mimetypes
 from word_checker import WordChecker
+from parser import Parser
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -46,6 +47,8 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             print 'hello'
             SimpleHTTPRequestHandler.done = True
         self.wordChecker = WordChecker(5000)
+        self.parser = Parser()
+        BaseHTTPServer.BaseHTTPRequestHandler.__init__(self, request, client_address, server)
 
     def do_GET(self):
         """Serve a GET request."""
@@ -72,7 +75,6 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         and must be closed by the caller under all circumstances), or
         None, in which case the caller has nothing further to do.
         """
-        
         word = self.path[1:]
         word = urllib.unquote(word)
         """word = word.replace("%20", " ")"""
@@ -89,7 +91,7 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         encoding = sys.getfilesystemencoding()
         self.send_header("Content-type", "text/plain; charset=%s" % encoding)
         self.send_header("Content-Length", str(length))
-	self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         return f
 
