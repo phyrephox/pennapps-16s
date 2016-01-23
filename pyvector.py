@@ -14,8 +14,9 @@ import time
 class WordVector:
 
     def get_neighbors(self, word):
-        subprocess.call('echo ' + word + ' > ' +  "/tmp/srv-input")
-        time.sleep(0.5)
+        line  = 'echo ' + word + ' > ' +  "/tmp/srv-input"
+        subprocess.call(line, shell=True)
+        time.sleep(1.4)
         words = []
 
         with open('output') as f:
