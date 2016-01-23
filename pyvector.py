@@ -6,19 +6,25 @@
 
 from subprocess import Popen
 import MutableFile
+import sys
+import subprocess
+import time
 
-class WordVecer:
-    filename = ""
-    db_proc = None
-    input_obj = None
 
-    def __init__(self, filename):
-        self.filename = filename
-        slef.input_obj = MutableFile.MutableFile()
-        self.db_proc = Popen(["./distance ", filename], stdin=self.input_obj)
-        (stdout, sterr) = self.db_proc.communicate()
+class WordVector:
 
-    def check_word(self, word):
-        self.db_proc
+    def get_neighbors(self, word):
+        subprocess.call('echo ' + word + ' > ' +  "/tmp/srv-input")
+        time.sleep(0.5)
+        words = []
+
+        with open('output') as f:
+            for i in range(0,5):
+                f.readline()
+            for line in f:
+                words.append(line.strip().split('\t')[0])
+        return words
+
+
 
 
