@@ -37,18 +37,8 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     server_version = "SimpleHTTP/" + __version__ 
     done = False
-
-    #def __init__(self, request):
-    #    super().__init__(self, request)
-    #    self.wordChecker = WordChecker()
-    def __init__(self, request, client_address, server):
-        BaseHTTPServer.BaseHTTPRequestHandler.__init__(self, request, client_address, server)
-        if not SimpleHTTPRequestHandler.done:
-            print 'hello'
-            SimpleHTTPRequestHandler.done = True
-        self.wordChecker = WordChecker(5000)
-        self.parser = Parser()
-        BaseHTTPServer.BaseHTTPRequestHandler.__init__(self, request, client_address, server)
+    wordChecker = WordChecker(5000)
+    parser = Parser()
 
     def do_GET(self):
         """Serve a GET request."""
@@ -100,11 +90,10 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         replace with word translation
         """
 
-        self.wordChecker = WordChecker(5000)
-
+        """
         words = word.split()
         for i in range(len(words)):
-            if self.wordChecker.check_word(words[i].lower()):
+            if SimpleHTTPRequestHandler.wordChecker.check_word(words[i].lower()):
                 words[i] = words[i]
             else:
                 words[i] = "<" + words[i] + ">"
@@ -112,6 +101,9 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         for oneword in words:
             output = output + oneword + " "
         output = output[:-1]
+        """
+
+        output = SimpleHTTPRequestHandler.parser.parseSection(word)
         print "Output: " + output
         return output
 

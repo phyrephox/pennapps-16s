@@ -2,6 +2,7 @@ import string
 
 class WordChecker(object):
     def __init__(self, num_words):
+        print "Word Checker inited"
         self.word_list = []
         self.word_set = set(self.word_list)
         #f = open('google-10000-english/google-10000-english-usa.txt', 'r')
