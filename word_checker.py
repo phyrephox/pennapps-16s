@@ -5,14 +5,13 @@ class WordChecker(object):
         self.word_list = []
         self.word_set = set(self.word_list)
         #f = open('google-10000-english/google-10000-english-usa.txt', 'r')
-        f = open('words.csv', 'r')
+        f = open('words.txt', 'r')
         for line in f:
             if line[0] == '#':
                 continue
-            word = string.split(line, ',')[1]
-            word = string.strip(word[6:])
-            self.word_list.append(word)
-        self.word_set = set(self.word_list[:num_words])
+            self.word_list.append(string.strip(line))
+        self.word_set = set(self.word_list)
+        """self.word_set = set(self.word_list[:num_words])"""
 
     def check_word(self, word):
         return string.strip(word) in self.word_set
