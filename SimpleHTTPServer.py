@@ -100,6 +100,7 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         f = StringIO()
         output = SimpleHTTPRequestHandler.parser.tagSection(word)
         f.write(output)
+        print "Output: " + output
         length = f.tell()
         f.seek(0)
         self.send_response(200)
