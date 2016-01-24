@@ -8,8 +8,8 @@ class Parser(object):
         self.WordVector = WordVector()
 
     def parseSection(self, section):
-        ret = section
-        p = pattern.en.parse(section, chunks = False, lemmata = True).split()
+        ret = section.lower()
+        p = pattern.en.parse(ret, chunks = False, lemmata = True).split()
         #finalS = []
         for sentence in p:
             s = []
@@ -31,8 +31,6 @@ class Parser(object):
                     p_test = pattern.en.parse(' '.join(s), chunks = False, lemmata = True).split()
                     if p_test[0][count][1] == sentence[count][1]:
                         w = self.matchType(sentence[count], p_test[0][count])
-                        if count == 0 and s[0][0][0].isupper():
-                            w = w.capitalize()
                         #final[-1] = w
                         ret = ret.replace(word[0], w, 1)
                         break
@@ -43,6 +41,8 @@ class Parser(object):
         #    ret = ' '+ret
         #if section[-1] == ' ':
         #    ret += ' '
+        if section[0].isupper():
+            ret = ret.capitalize()
         return ret
 
     def matchType(self, original, test):
@@ -101,7 +101,7 @@ class Parser(object):
 def parseMain():
     p = Parser()
     #print p.parseSection('The quick brown fox jumps over the lazy dog.')
-    print p.parseSection('ubiquitous')
+    print p.parseSection('More information')
     #print pattern.en.parse('bless')
     #print p.matchType(['purring','VBG'], ['bless','VB'])
     #print pattern.en.parse('purring')
