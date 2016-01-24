@@ -7,6 +7,14 @@ class Parser(object):
         self.wordChecker = WordChecker(5000)
         self.WordVector = WordVector()
 
+    def tagSection(self, section):
+        ret = section
+        p = pattern.en.parse(ret, chunks = False, lemmata = True).split()
+        for sentence in p:
+            for word in sentence:
+                ret = ret.replace(word[0], word[0]+'<sup>'+word[1]+'</sup>')
+        return ret
+
     def parseSection(self, section):
         ret = section
         p = pattern.en.parse(ret, chunks = False, lemmata = True).split()
@@ -106,7 +114,7 @@ class Parser(object):
 def parseMain():
     p = Parser()
     #print p.parseSection('The quick brown fox jumps over the lazy dog.')
-    print p.parseSection(' I want More information')
+    print p.tagSection(' I want More information')
     #print pattern.en.parse('bless')
     #print p.matchType(['purring','VBG'], ['bless','VB'])
     #print pattern.en.parse('purring')
