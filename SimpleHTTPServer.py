@@ -108,7 +108,7 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         """
 
         output = SimpleHTTPRequestHandler.parser.parseSection(word)
-        #output = output.encode(encoding='UTF-8',errors='replace')
+        output = output.encode(encoding='UTF-8',errors='replace')
         print "Output: " + output
         return output
 

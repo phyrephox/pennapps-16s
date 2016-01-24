@@ -17,7 +17,7 @@ class WordVector:
         return ['less', 'popular']
         line  = 'echo ' + word + ' > ' +  "/tmp/srv-input"
         subprocess.call(line, shell=True)
-        time.sleep(1.4)
+        time.sleep(1.6)
         words = []
 
         with open('output') as f:
