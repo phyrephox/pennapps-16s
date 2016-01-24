@@ -11,9 +11,13 @@ class Parser(object):
         p = pattern.en.parse(section, chunks = False, lemmata = True).split()
         finalS = []
         for sentence in p:
-            s = list(sentence)
+            s = []
+            for w in sentence:
+                s.append(w[0])
             final = []
             for count, word in enumerate(sentence):
+                if self.wordChecker.check_word(word[0]):
+                    continue
                 final.append(word[0])
                 if word[1][:3] == 'NNP' or word[1] in ['.',',',':','(',')']:
                     continue
@@ -22,13 +26,15 @@ class Parser(object):
                     if not self.wordChecker.check_word(test_word):
                         continue
                     s[count] = test_word
+                    print s
                     p_test = pattern.en.parse(' '.join(s), chunks = False, lemmata = True).split()
-                    if p_test[0][count][1] == s[0][count][1]:
-                        w = matchType(test_word)
+                    if p_test[0][count][1] == sentence[count][1]:
+                        w = self.matchType(sentence[count], p_test[0][count])
                         if count == 0:
                             w = w.capitalize()
                         final[-1] = w
                         break
+                s[count] = word[0]
             finalS.append(' '.join(final))
         return ''.join(finalS)
 
