@@ -39,12 +39,8 @@ class Parser(object):
                     p_test = pattern.en.parse(' '.join(s), chunks = False, lemmata = True).split()
                     if p_test[0][count][1] == sentence[count][1]:
                         w = self.matchType(sentence[count], p_test[0][count])
-                        #final[-1] = w
                         if word[0][0].isupper():
                             w = w.capitalize()
-                        word[0] = word[0].encode(encoding='UTF-8',errors='replace')
-                        ret = ret.encode(encoding='UTF-8',errors='replace')
-                        w = w.encode(encoding='UTF-8',errors='replace')
                         ret = ret.replace(word[0], w, 1)
                         break
                 s[count] = word[0]

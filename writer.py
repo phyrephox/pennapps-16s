@@ -9,7 +9,7 @@ for line in sys.stdin:
     if "Out of dictionary" in line:
         count = 0
         lines = []
-    if count == 45:
+    if count == 105:
         with open('output', 'w') as f:
             f.writelines(lines)
         count = 0
