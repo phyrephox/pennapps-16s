@@ -16,9 +16,9 @@ class Parser(object):
                 s.append(w[0])
             final = []
             for count, word in enumerate(sentence):
-                if self.wordChecker.check_word(word[0]):
-                    continue
                 final.append(word[0])
+                if self.wordChecker.check_word(word[0]) or word[0] in ['favicon.ico']:
+                    continue
                 if word[1][:3] == 'NNP' or word[1] in ['.',',',':','(',')']:
                     continue
                 alternates = self.WordVector.get_neighbors(word[2])
@@ -30,13 +30,13 @@ class Parser(object):
                     p_test = pattern.en.parse(' '.join(s), chunks = False, lemmata = True).split()
                     if p_test[0][count][1] == sentence[count][1]:
                         w = self.matchType(sentence[count], p_test[0][count])
-                        if count == 0:
+                        if count == 0:# and s[0][0][0].isupper():
                             w = w.capitalize()
                         final[-1] = w
                         break
                 s[count] = word[0]
             finalS.append(' '.join(final))
-        return ''.join(finalS)
+        return ' '.join(finalS)
 
     def matchType(self, original, test):
         oPOS = original[1]
@@ -93,7 +93,10 @@ class Parser(object):
 
 def parseMain():
     p = Parser()
-    print p.parseSection('The quick brown fox jumps over the lazy dog.')
+    #print p.parseSection('The quick brown fox jumps over the lazy dog.')
+    print pattern.en.parse('bless')
+    print p.matchType(['purring','VBG'], ['bless','VB'])
+    #print pattern.en.parse('purring')
     #p.getLemma('purring')
     #print p.POS
     #print p.getRep(['bless'])
