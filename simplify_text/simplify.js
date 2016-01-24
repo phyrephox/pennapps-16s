@@ -1,10 +1,5 @@
 console.log('Preparing to simplify');
 
-var xmlHttp = new XMLHttpRequest();
-xmlHttp.open( "GET", "http://localhost:8000/yo", false ); // false for synchronous request
-xmlHttp.send();
-console.log(xmlHttp.responseText);
-
 var elements = document.getElementsByTagName("*"); for (var x = 0; x < elements.length; x++) {
   	var anelement = elements[x];
 
@@ -12,7 +7,9 @@ var elements = document.getElementsByTagName("*"); for (var x = 0; x < elements.
   		var node = anelement.childNodes[y];
   		if (node.nodeType == 3) {
   			var text = node.nodeValue
-  			if (/\S/.test(text)) {
+  			if (/\S/.test(text) && node.parentNode.tagName != "SCRIPT" && node.parentNode.tagName != "STYLE") {
+          console.log(node.parentNode.tagName)
+          
   				//var res = text.split(" ")
   				//for (var z = 0; z < res.length; z++) {
   				//	if (/\S/.test(res[z])) {
