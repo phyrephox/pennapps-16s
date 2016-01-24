@@ -65,20 +65,26 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         and must be closed by the caller under all circumstances), or
         None, in which case the caller has nothing further to do.
         """
-        word = self.path[1:]
-        print word
-        #word = word.replace("%0D%0A", "%20")
-        #word = word.replace("%0D", "%20")
-        #word = word.replace("%0A", "%20")
-        word = urllib.unquote(word)
-        """word = word.replace("%20", " ")"""
-        print "Input: " + word
-        return self.return_translation(word)
+        print self.path[:4]
+        if self.path[:4] == "/%%%":
+            word = self.path[4:]
+            word = urllib.unquote(word)
+            print "Input: " + word
+            return self.return_mark(word)
+        else:
+            word = self.path[1:]
+            word = urllib.unquote(word)
+            print "Input: " + word
+            return self.return_translation(word)
+        
+        
 
     def return_translation(self, word):
 
         f = StringIO()
-        f.write(self.translate(word))
+        output = SimpleHTTPRequestHandler.parser.parseSection(word)
+        f.write(output)
+        print "Output: " + output
         length = f.tell()
         f.seek(0)
         self.send_response(200)
@@ -89,27 +95,20 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()
         return f
 
-    def translate(self, word):
-        """
-        replace with word translation
-        """
+    def return_mark(self, word):
 
-        """
-        words = word.split()
-        for i in range(len(words)):
-            if SimpleHTTPRequestHandler.wordChecker.check_word(words[i].lower()):
-                words[i] = words[i]
-            else:
-                words[i] = "<" + words[i] + ">"
-        output = ""
-        for oneword in words:
-            output = output + oneword + " "
-        output = output[:-1]
-        """
-
-        output = SimpleHTTPRequestHandler.parser.parseSection(word)
-        print "Output: " + output
-        return output
+        f = StringIO()
+        output = SimpleHTTPRequestHandler.parser.tagSection(word)
+        f.write(output)
+        length = f.tell()
+        f.seek(0)
+        self.send_response(200)
+        encoding = sys.getfilesystemencoding()
+        self.send_header("Content-type", "text/html; charset=%s" % encoding)
+        self.send_header("Content-Length", str(length))
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        return f
 
     def copyfile(self, source, outputfile):
         """Copy all data between two file objects.
