@@ -31,10 +31,10 @@ class Parser(object):
                     p_test = pattern.en.parse(' '.join(s), chunks = False, lemmata = True).split()
                     if p_test[0][count][1] == sentence[count][1]:
                         w = self.matchType(sentence[count], p_test[0][count])
-                        if count == 0:# and s[0][0][0].isupper():
+                        if count == 0 and s[0][0][0].isupper():
                             w = w.capitalize()
                         #final[-1] = w
-                        ret.replace(word[0], w, 1)
+                        ret = ret.replace(word[0], w, 1)
                         break
                 s[count] = word[0]
             #finalS.append(' '.join(final))
@@ -101,8 +101,9 @@ class Parser(object):
 def parseMain():
     p = Parser()
     #print p.parseSection('The quick brown fox jumps over the lazy dog.')
-    print pattern.en.parse('bless')
-    print p.matchType(['purring','VBG'], ['bless','VB'])
+    print p.parseSection('ubiquitous')
+    #print pattern.en.parse('bless')
+    #print p.matchType(['purring','VBG'], ['bless','VB'])
     #print pattern.en.parse('purring')
     #p.getLemma('purring')
     #print p.POS
