@@ -20,6 +20,7 @@ class Parser(object):
 
     def parseSection(self, section):
         ret = section
+        print ret
         p = pattern.en.parse(ret, chunks = False, lemmata = True).split()
         #finalS = []
         for sentence in p:
@@ -29,7 +30,7 @@ class Parser(object):
             #final = []
             for count, word in enumerate(sentence):
                 #final.append(word[0])
-                if self.wordChecker.check_word(word[0].lower()) or word[0] in ['favicon.ico']:
+                if self.wordChecker.check_word(word[0].lower()) or self.wordChecker.check_word(word[0]) or word[0] in ['favicon.ico']:
                     continue
                 if word[1][:3] == 'NNP' or word[1] in ['.',',',':','(',')']:
                     continue
@@ -44,6 +45,8 @@ class Parser(object):
                         w = self.matchType(sentence[count], p_test[0][count])
                         if word[0][0].isupper():
                             w = w.capitalize()
+                        else:
+                            w = w.lower()
                         ret = ret.replace(word[0], w, 1)
                         break
                 s[count] = word[0]
@@ -53,8 +56,8 @@ class Parser(object):
         #    ret = ' '+ret
         #if section[-1] == ' ':
         #    ret += ' '
-        if section[0].isupper():
-            ret = ret.capitalize()
+        #if section[0].isupper():
+        #    ret = ret.capitalize()
         return ret
 
     def matchType(self, original, test):
@@ -112,8 +115,10 @@ class Parser(object):
 
 def parseMain():
     p = Parser()
+    print 'HUGE'.capitalize()
+    print p.parseSection('ginormous')
     #print p.parseSection('The quick brown fox jumps over the lazy dog.')
-    print p.tagSection(' I want More information')
+    #print p.tagSection(' I want More information')
     #print pattern.en.parse('bless')
     #print p.matchType(['purring','VBG'], ['bless','VB'])
     #print pattern.en.parse('purring')
