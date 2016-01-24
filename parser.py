@@ -1,4 +1,5 @@
 import pattern.en
+import string
 from word_checker import WordChecker
 from pyvector import WordVector
 
@@ -9,13 +10,28 @@ class Parser(object):
 
     def tagSection(self, section):
         ret = section
+        splitwords = ret.split(" ")
         p = pattern.en.parse(ret, chunks = False, lemmata = True).split()
         for sentence in p:
+            count = 0
             for word in sentence:
+                print "Word: " + word[0]
+                notreplaced = True
                 if self.wordChecker.check_word(word[0].lower()):
-                    ret = ret.replace(word[0], word[0]+'<sup>'+word[1][0]+'</sup>')
+                    for i in range(len(splitwords)):
+                        if word[0].lower() in splitwords[i].lower() and notreplaced:
+                            if "<" not in splitwords[i].lower():
+                                if word[0] not in string.punctuation:
+                                    splitwords[i] = splitwords[i].replace(word[0], word[0]+'<sup>'+word[1][0]+'</sup>', 1)
+                                    notreplaced = False
                 else:
-                    ret = ret.replace(word[0], '<mark>'+word[0]+'<sup>'+word[1][0]+'</sup>'+'</mark>')
+                    for i in range(len(splitwords)):
+                        if word[0].lower() in splitwords[i].lower() and notreplaced:
+                            if "<" not in splitwords[i].lower():
+                                if word[0] not in string.punctuation:
+                                    splitwords[i] = splitwords[i].replace(word[0], '<mark>'+word[0]+'<sup>'+word[1][0]+'</sup>'+'</mark>', 1)
+                                    notreplaced = False
+        ret = ' '.join(splitwords)
         return ret
 
     def parseSection(self, section):
