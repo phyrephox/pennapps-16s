@@ -83,6 +83,7 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         f = StringIO()
         output = SimpleHTTPRequestHandler.parser.parseSection(word)
+        output = output.encode('utf-8')
         f.write(output)
         print "Output: " + output
         length = f.tell()
@@ -99,6 +100,8 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         f = StringIO()
         output = SimpleHTTPRequestHandler.parser.tagSection(word)
+        output = output.encode('utf-8')
+        #unicode(output, "utf-8")
         f.write(output)
         print "Output: " + output
         length = f.tell()

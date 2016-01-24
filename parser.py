@@ -12,12 +12,14 @@ class Parser(object):
 
     def tagSection(self, section):
         ret = section
+        ret = unicode(ret, "utf-8")
         splitwords = ret.split(" ")
         p = pattern.en.parse(ret, chunks = False, lemmata = True).split()
         for sentence in p:
             count = 0
             for word in sentence:
                 print "Word: " + word[0]
+                #word[0] = word[0].encode('ascii','replace')
                 notreplaced = True
                 if self.wordChecker.check_word(word[0].lower()):
                     for i in range(len(splitwords)):
@@ -39,6 +41,7 @@ class Parser(object):
     def parseSection(self, section):
         ret = section
         print ret
+        ret = unicode(ret, "utf-8")
         p = pattern.en.parse(ret, chunks = False, lemmata = True).split()
         #finalS = []
         for sentence in p:
