@@ -12,7 +12,10 @@ class Parser(object):
         p = pattern.en.parse(ret, chunks = False, lemmata = True).split()
         for sentence in p:
             for word in sentence:
-                ret = ret.replace(word[0], word[0]+'<sup>'+word[1]+'</sup>')
+                if self.wordChecker.check_word(word[0].lower()):
+                    ret = ret.replace(word[0], word[0]+'<sup>'+word[1][0]+'</sup>')
+                else:
+                    ret = ret.replace(word[0], '<mark>'+word[0]+'<sup>'+word[1][0]+'</sup>'+'</mark>')
         return ret
 
     def parseSection(self, section):
