@@ -8,7 +8,7 @@ class Parser(object):
         self.WordVector = WordVector()
 
     def parseSection(self, section):
-        ret = section.lower()
+        ret = section
         try:
             unicode(ret, 'ascii')
         except UnicodeError:
@@ -24,13 +24,13 @@ class Parser(object):
             #final = []
             for count, word in enumerate(sentence):
                 #final.append(word[0])
-                if self.wordChecker.check_word(word[0]) or word[0] in ['favicon.ico']:
+                if self.wordChecker.check_word(word[0].lower()) or word[0] in ['favicon.ico']:
                     continue
                 if word[1][:3] == 'NNP' or word[1] in ['.',',',':','(',')']:
                     continue
                 alternates = self.WordVector.get_neighbors(word[2])
                 for test_word in alternates:
-                    if not self.wordChecker.check_word(test_word):
+                    if not self.wordChecker.check_word(test_word.lower()):
                         continue
                     s[count] = test_word
                     print s
@@ -45,6 +45,8 @@ class Parser(object):
                         else:
                             pass
                         #w = w.encode(encoding='UTF-8',errors='replace')
+                        if word[0][0].isupper():
+                            w = w.capitalize()
                         ret = ret.replace(word[0], w, 1)
                         break
                 s[count] = word[0]
@@ -114,7 +116,7 @@ class Parser(object):
 def parseMain():
     p = Parser()
     #print p.parseSection('The quick brown fox jumps over the lazy dog.')
-    print p.parseSection('More information')
+    print p.parseSection(' I want More information')
     #print pattern.en.parse('bless')
     #print p.matchType(['purring','VBG'], ['bless','VB'])
     #print pattern.en.parse('purring')
