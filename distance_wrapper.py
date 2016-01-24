@@ -5,8 +5,9 @@
 
 from ctypes import *
 #from numpy.ctypeslib import ndpointer
-clib = cdll.LoadLibrary('./libtest.so')
+clib = cdll.LoadLibrary('./trunk/distance')
 clib.get_neighbors.restype = POINTER(c_char_p)
+#clib.construct.argtypes = [c_char_p, POINTER(c_float)]
 #clib.get_neighbors.restype = c_char_p
 
 class Distance:
@@ -14,17 +15,30 @@ class Distance:
     def __init__(self):
         #self.testlib = ctypes.CDLL('/home/john/pennapps16s/pennapps-16s/trunk/a.out')
         #print clib.simple()
-        self.state = clib.construct()
-        #print self.state
+        self.M_arr = (c_float * 3000000 * 300)()
+        #cast(self.M_arr, POINTER(c_float))
+        print self.M_arr
+        self.vocab_arr = (c_char * 3000000 * 50)()
+        #cast(self.vocab_arr, POINTER(c_float))
+        self.state = (c_byte * 413296)()
+        print self.state
+        clib.construct('GoogleNews-vectors-negative300.bin', self.M_arr, self.vocab_arr, self.state)
+        print self.state
 
     def distance(self, word):
         #self.testlib.myprint()
-        words = clib.get_neighbors(self.state, word)
-        ws = words[:5]
+        print word
+
+       # self.output_add = (POINTER(c_char) * 100)()
+       # for i in range(0, 100):
+       #     ctype.
+        self.ret_array = ((c_char * 2000) * 100)()
+
+        words = clib.get_neighbors(self.state, word, byref(self.ret_array))
+        print words[0]
+        ws = words[:100]
         return ws
         """ws = []
         for i in range(100):
             ws[i]"""
 
-d = Distance()
-d.distance('hello')

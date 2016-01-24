@@ -23,9 +23,6 @@
 //const long long N = 100;                  // number of closest words that will be shown
 const long long max_w = 50;              // max length of vocabulary entries
 
-int main(int argc, char **argv) {
-  return 0;
-}
 
 typedef struct State {
   FILE *f;
@@ -40,7 +37,7 @@ typedef struct State {
 } State;
 
 
-State* construct(int argc, char **argv) {
+State* construct(char *file, float *M, char *vocab, State* state) {
   FILE *f;
   char st1[max_size];
   char *bestw[N];
@@ -48,16 +45,21 @@ State* construct(int argc, char **argv) {
   float dist, len, bestd[N], vec[max_size];
   long long words, size, a, b, c, d, cn, bi[100];
   char ch;
-  float *M;
-  char *vocab;
-  State *state = malloc(sizeof(State));
+  //float *M;
+  //char *vocab;
+  printf("sizeof state: %d \n", sizeof(State));
+  //State *state = malloc(sizeof(State));
+  printf("%p\n",M);
+
+  printf(file);
 
   // Handle CLI arguments
-  if (argc < 2) {
-    printf("Usage: ./distance <FILE>\nwhere FILE contains word projections in the BINARY FORMAT\n");
-    return state;
-  }
-  strcpy(file_name, argv[1]);
+ // if (argc < 2) {
+ //   printf("Usage: ./distance <FILE>\nwhere FILE contains word projections in the BINARY FORMAT\n");
+ //   return state;
+  //}
+  //strcpy(file_name, argv[1]);
+  strcpy(file_name, file);
 
   // Read in Word Vector Binary
   f = fopen(file_name, "rb");
@@ -67,9 +69,10 @@ State* construct(int argc, char **argv) {
   }
   fscanf(f, "%lld", &words);
   fscanf(f, "%lld", &size);
-  vocab = (char *)malloc((long long)words * max_w * sizeof(char));
-  for (a = 0; a < N; a++) bestw[a] = (char *)malloc(max_size * sizeof(char));
-  M = (float *)malloc((long long)words * (long long)size * sizeof(float));
+  printf("words: %lld size:%lld,", words, size);
+  //vocab = (char *)malloc((long long)words * max_w * sizeof(char));
+  //for (a = 0; a < N; a++) bestw[a] = (char *)malloc(max_size * sizeof(char));
+  //M = (float *)malloc((long long)words * (long long)size * sizeof(float));
   if (M == NULL) {
     printf("Cannot allocate memory: %lld MB    %lld  %lld\n", (long long)words * size * sizeof(float) / 1048576, words, size);
     return state;
@@ -95,9 +98,11 @@ State* construct(int argc, char **argv) {
   // Assign all needed values to State* state, to be passed up to Python handler
   // And given back to get_neighbors to get vector neighbors
   strcpy(state -> st1, st1);
-  for (a = 0; a < N; a++) {
-    strcpy(state->bestw[a], bestw[a]);
-  }
+
+  memcpy(state->bestw, bestw, N * sizeof(char*));
+// for (a = 0; a < N; a++) {
+//    state->bestw[a] = bestw[a];
+//  }
   strcpy(state -> file_name, file_name);
   for (a = 0; a < N; a++) {
     strcpy(state->st[a], st[a]);
@@ -124,35 +129,46 @@ State* construct(int argc, char **argv) {
   state->M = M;
   state->vocab = vocab;
   fclose(f); // AND now we're done with the original file.
+  printf("state[%p]\n", state);
   return state;
 }
-char **get_neighbors(State *state, char *word) {
+char **get_neighbors(State *state, char *word, char **bestw) {
+  printf("state[%p]\n", state);
+  
   char st1[max_size];
-  char *bestw[N];
+  //char *bestw[N];
   char file_name[max_size], st[100][max_size];
   float dist, len, bestd[N], vec[max_size];
   long long words, size, a, b, c, d, cn, bi[100];
   float *M;
   char *vocab;
+  printf(word);
 
   // Read back in the values to their original
   // Variable names, to make the program run like it wanted to originally.
-  strcpy(st1, state->st1);
-  for (a = 0; a < N; a++) {
-    strcpy(bestw[a], state->bestw[a]);
-  }
-  strcpy(file_name, state->file_name);
-  for (a = 0; a < N; a++) {
-    strcpy(st[a], state->st[a]);
-  }
+
+  
+  
+  //strcpy(st1, state->st1);
+  //memcpy(bestw, state->bestw, N * sizeof(char*));
+  
+//  for (a = 0; a < N; a++) {
+//    bestw[a] = state->bestw[a];
+//  }
+ 
+  //strcpy(file_name, state->file_name);
+  //for (a = 0; a < N; a++) {
+  //  strcpy(st[a], state->st[a]);
+  //}
   dist = state->dist;
   len = state->len;
-  for (a = 0; a < N; a++) {
-    bestd[a] = state->bestd[a];
-  }
-  for (a = 0; a < max_size; a++) {
-    vec[a] = state->vec[a];
-  }
+  //for (a = 0; a < N; a++) {
+  //  bestd[a] = state->bestd[a];
+  //}
+  //for (a = 0; a < max_size; a++) {
+  //  vec[a] = state->vec[a];
+  //}
+  
   words = state->words;
   size = state->size;
   a = state->a;
@@ -160,26 +176,31 @@ char **get_neighbors(State *state, char *word) {
   c = state->c;
   d = state->d;
   cn = state->cn;
-  for (a = 0; a < 100; a++) {
-    bi[a] = state->bi[a];
-  }
+  //for (a = 0; a < 100; a++) {
+  //  bi[a] = state->bi[a];
+  //}
   M = state->M;
   vocab = state->vocab;
+  printf("M[%p]\n", M);
 
+  // These don't need to be assigned in construct, so do 'em here.
+  //vocab = (char *)malloc((long long)words * max_w * sizeof(char));
+  for (a = 0; a < N; a++) bestw[a] = (char *)malloc(max_size * sizeof(char));
 
   // Main computation loop. Wait for input, and then print vectors or something?
   for (a = 0; a < N; a++) bestd[a] = 0;
-  for (a = 0; a < N; a++) bestw[a][0] = 0;
-  printf("Enter word or sentence (EXIT to break): ");
-  a = 0;
-  while (1) {
-    st1[a] = fgetc(stdin);
-    if ((st1[a] == '\n') || (a >= max_size - 1)) {
-      st1[a] = 0;
-      break;
-    }
-    a++;
-  }
+  //for (a = 0; a < N; a++) bestw[a][0] = 0;
+ // printf("Enter word or sentence (EXIT to break): ");
+ // a = 0;
+ // while (1) {
+ //   st1[a] = fgetc(stdin);
+ //   if ((st1[a] == '\n') || (a >= max_size - 1)) {
+ //     st1[a] = 0;
+ //     break;
+ //   }
+ //   a++;
+ // }
+  strcpy(st1, word);
   //if (!strcmp(st1, "EXIT")) break;
   cn = 0;
   b = 0;
@@ -200,32 +221,42 @@ char **get_neighbors(State *state, char *word) {
   }
   cn++;
 
+  
   // Also another loop: 
   for (a = 0; a < cn; a++) {
     for (b = 0; b < words; b++) if (!strcmp(&vocab[b * max_w], st[a])) break;
     if (b == words) b = -1;
     bi[a] = b;
-    printf("\nWord: %s  Position in vocabulary: %lld\n", st[a], bi[a]);
+    //printf("\nWord: %s  Position in vocabulary: %lld\n", st[a], bi[a]);
     if (b == -1) {
-      printf("Out of dictionary word!\n");
-      break;
+      //printf("Out of dictionary word!\n");
+      //break;
     }
+    printf("%d",a);
   }
-
+  
   // Now we're ready to print out our vectors 
   //if (b == -1) continue;
   printf("\n                                              Word       Cosine distance\n------------------------------------------------------------------------\n");
   for (a = 0; a < size; a++) vec[a] = 0;
   for (b = 0; b < cn; b++) {
     if (bi[b] == -1) continue;
-    for (a = 0; a < size; a++) vec[a] += M[a + bi[b] * size];
+    for (a = 0; a < size; a++){
+      vec[a] += M[a + bi[b] * size];
+      //printf("%f\n", M[0]);
+      //printf("%f\n", vec[a]);
+    }
   }
   len = 0;
-  for (a = 0; a < size; a++) len += vec[a] * vec[a];
+  printf("%f\n", len);
+  //printf("%f\n", vec[0]);
+  for (a = 0; a < size; a++){ len += vec[a] * vec[a];}
+  //printf("%f\n", len);
   len = sqrt(len);
   for (a = 0; a < size; a++) vec[a] /= len;
   for (a = 0; a < N; a++) bestd[a] = -1;
   for (a = 0; a < N; a++) bestw[a][0] = 0;
+  
   for (c = 0; c < words; c++) {
     a = 0;
     for (b = 0; b < cn; b++) if (bi[b] == c) a = 1;
@@ -245,7 +276,18 @@ char **get_neighbors(State *state, char *word) {
     }
   }
   // Print out the neighbors
-  for (a = 0; a < N; a++) printf("%50s\t\t%f\n", bestw[a], bestd[a]);
+  //for (a = 0; a < N; a++) printf("%50s\t\t%f\n", bestw[a], bestd[a]);
   fflush(stdout);
   return bestw;
+}
+
+State* dummy(char *file) {
+  printf(file);
+  return 0;
+}
+
+int main(int argc, char **argv) {
+  char *file = "GoogleNews-vectors-negative300.bin";
+  State* state = dummy(file);
+  get_neighbors(state, "pizza", 0);
 }
