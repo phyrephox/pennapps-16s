@@ -1,11 +1,13 @@
 import pattern.en
 from word_checker import WordChecker
+from distance_wrapper import Distance
 from pyvector import WordVector
 
 class Parser(object):
     def __init__(self):
         self.wordChecker = WordChecker(5000)
         self.WordVector = WordVector()
+        self.Distance = Distance()
 
     def tagSection(self, section):
         ret = section
@@ -34,7 +36,9 @@ class Parser(object):
                     continue
                 if word[1][:3] == 'NNP' or word[1] in ['.',',',':','(',')']:
                     continue
-                alternates = self.WordVector.get_neighbors(word[2])
+                #alternates = self.WordVector.get_neighbors(word[2])
+                alternates = self.Distance.get_neighbors(word[2])
+                #print alternates, word[2]
                 for test_word in alternates:
                     if not self.wordChecker.check_word(test_word.lower()):
                         continue
