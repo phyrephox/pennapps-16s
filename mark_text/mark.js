@@ -1,6 +1,7 @@
 console.log('Preparing to mark');
 
-var elements = document.getElementsByTagName("*"); for (var x = 0; x < elements.length; x++) {
+var elements = document.getElementsByTagName("*"); 
+for (var x = 0; x < elements.length; x++) {
   	var anelement = elements[x];
 
   	for (var y = 0; y < anelement.childNodes.length; y++) {
@@ -8,7 +9,7 @@ var elements = document.getElementsByTagName("*"); for (var x = 0; x < elements.
   		if (node.nodeType == 3) {
   			var text = node.nodeValue
         
-  			if (/\S/.test(text) && node.parentNode.tagName != "SCRIPT" && node.parentNode.tagName != "STYLE") {
+  			if (/\S/.test(text) && node.parentNode.tagName != "SCRIPT" && node.parentNode.tagName != "STYLE" && node.parentNode.tagName != "MARK" && node.parentNode.tagName != "SUP" && node.parentNode.tagName != "MODIFIED" ) {
           console.log(node.parentNode.tagName)
 
   				//var res = text.split(" ")
@@ -29,11 +30,13 @@ var elements = document.getElementsByTagName("*"); for (var x = 0; x < elements.
   				text = text.replace(text, tempreplace);
   				//	}
   				//}
-          //var replacement = document.createElement("span");
-          //replacement.innerHTML = text;
-          //anelement.replaceChild(replacement, node)
+          var replacement = document.createElement("MODIFIED");
+          replacement.innerHTML = text;
+          anelement.replaceChild(replacement, node)
           //node.innerHTML = text;
-  				//anelement.replaceChild(document.createTextNode(text), node);
+          //anelement.replaceChild(document.createTextNode(text), node);
+          //node.innerHTML = text;
+  				
   			}
   		}
 
