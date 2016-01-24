@@ -66,6 +66,10 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         None, in which case the caller has nothing further to do.
         """
         word = self.path[1:]
+        print word
+        #word = word.replace("%0D%0A", "%20")
+        #word = word.replace("%0D", "%20")
+        #word = word.replace("%0A", "%20")
         word = urllib.unquote(word)
         """word = word.replace("%20", " ")"""
         print "Input: " + word
@@ -104,7 +108,7 @@ class SimpleHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         """
 
         output = SimpleHTTPRequestHandler.parser.parseSection(word)
-        output = output.encode(encoding='UTF-8',errors='replace')
+        #output = output.encode(encoding='UTF-8',errors='replace')
         print "Output: " + output
         return output
 

@@ -8,15 +8,16 @@ class Parser(object):
         self.WordVector = WordVector()
 
     def parseSection(self, section):
+        ret = section
         p = pattern.en.parse(section, chunks = False, lemmata = True).split()
-        finalS = []
+        #finalS = []
         for sentence in p:
             s = []
             for w in sentence:
                 s.append(w[0])
-            final = []
+            #final = []
             for count, word in enumerate(sentence):
-                final.append(word[0])
+                #final.append(word[0])
                 if self.wordChecker.check_word(word[0]) or word[0] in ['favicon.ico']:
                     continue
                 if word[1][:3] == 'NNP' or word[1] in ['.',',',':','(',')']:
@@ -32,11 +33,17 @@ class Parser(object):
                         w = self.matchType(sentence[count], p_test[0][count])
                         if count == 0:# and s[0][0][0].isupper():
                             w = w.capitalize()
-                        final[-1] = w
+                        #final[-1] = w
+                        ret.replace(word[0], w, 1)
                         break
                 s[count] = word[0]
-            finalS.append(' '.join(final))
-        return ' '.join(finalS)
+            #finalS.append(' '.join(final))
+        #ret = ' '.join(finalS)
+        #if section[0] == ' ':
+        #    ret = ' '+ret
+        #if section[-1] == ' ':
+        #    ret += ' '
+        return ret
 
     def matchType(self, original, test):
         oPOS = original[1]

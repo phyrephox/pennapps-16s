@@ -19,6 +19,11 @@ var elements = document.getElementsByTagName("*"); for (var x = 0; x < elements.
   						//console.log("Bleh:" + res[z] + ":");
   				//		var temptext = res[z];
   				//text = text.replace(/[.,\/#!$%\^&\*;:{}=_`~()]/g,"")
+          text = text.replace(/\n/g, ' ');
+          if (text.slice(-1) == ' '){
+              text += "%20";
+          }
+          console.log(text);
           var xmlHttp = new XMLHttpRequest();
           xmlHttp.open( "GET", "http://localhost:8000/"+text, false ); // false for synchronous request
           xmlHttp.send();
